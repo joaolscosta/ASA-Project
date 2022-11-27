@@ -1,6 +1,8 @@
 #include <vector>
 #include <iostream>
 
+using std::endl, std::string;
+
 typedef std::vector<std::vector<int>> matrix;
 
 int main()
