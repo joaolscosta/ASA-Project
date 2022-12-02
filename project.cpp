@@ -24,7 +24,7 @@ int main()
   for (int i = columns; i > 0; i--)
   {
     int cont = 0;
-    for (int j = i; j > 0; j--)
+    for (int j = columns; j > 0; j--)
     {
       if (c_values[j - 1] >= i)
       {
@@ -33,10 +33,6 @@ int main()
         {
           max_square_dim = i;
         }
-      }
-      else
-      {
-        break;
       }
     }
     if (max_square_dim != 0)
