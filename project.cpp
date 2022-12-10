@@ -27,21 +27,6 @@ int nofways(int n, int m, int d, int c_values[], int i_line, int count, int comb
     }
 
   }
-  else if(d == c_values[i_line] && i_line + 1 > d) {  //caso em q um quadradao preenche a primeira linha toda mas n chega ao fundo da matriz
-    int i_line_re = i_line-d;
-    count+= (comb_sum[i_line_re]);
-    int c_aux_values[n];
-    int line_counter = 0;
-    for(int i = 0; i <= i_line; i++) { 
-      if(c_values[i] > c_values[i_line]) {
-        c_aux_values[i] = c_values[i] - d;
-        line_counter++;
-      }
-    }
-    int d_aux = c_values[i_line-d+1] - d;
-    int i_line_aux = (i_line-d+1) - d_aux +1;
-    count += 1 + nofways(n , c_values[0] - d, d_aux, c_aux_values, i_line_aux, count, comb_sum);
-  }
 
   else if(d < c_values[i_line]) { // casos em q ha mais q um quadrado na primeira linha
     
@@ -78,11 +63,28 @@ int nofways(int n, int m, int d, int c_values[], int i_line, int count, int comb
       //nao existe o caso de c_values[i_line]-d = 0 , pois vai a um if de cima quando o quadrado preenche a linha na totalidade e chega ao fundo da matriz 
     
     }
-    else if(i_line + 1 > d) { //casos em q ha mais q um quadrado na primeira linha e n chega até ao fundo da matriz
-      int i_line_re = i_line-d;
-      count+= (comb_sum[i_line_re]) * ((c_values[i_line])-d+1); //pode aproveitar as linhas q ja foram calculadas
 
+
+  }
+  else if(d == c_values[i_line] && i_line + 1 > d) {  //caso em q um quadrado preenche a primeira linha toda mas n chega ao fundo da matriz
+    int i_line_re = i_line-d;
+    count+= (comb_sum[i_line_re]);
+    int c_aux_values[n];
+    int line_counter = 0;
+    for(int i = 0; i <= i_line; i++) { 
+      if(c_values[i] > c_values[i_line]) {
+        c_aux_values[i] = c_values[i] - d;
+        line_counter++;
+      }
     }
+    int d_aux = c_values[i_line-d+1] - d;
+    int i_line_aux = (i_line-d+1) - d_aux +1;
+    count += 1 + nofways(n , c_values[0] - d, d_aux, c_aux_values, i_line_aux, count, comb_sum);
+  }
+  else if(d < c_values[i_line] && i_line + 1 > d) { //casos em q ha mais q um quadrado na primeira linha e n chega até ao fundo da matriz
+    int i_line_re = i_line-d;
+    count+= (comb_sum[i_line_re]) * ((c_values[i_line])-d+1); //pode aproveitar as linhas q ja foram calculadas
+
   }
   
   
@@ -164,16 +166,17 @@ int main()
 
   int c_values[lines];
   int comb_sum[lines]; //sum of combinations per line
-
-  for (int i = lines-1; i >= 0; i--) // input c values of each line
-  {
-    std::cin >> c_values[i];
-  }
-  
   for (int i = lines; i > 0; i--) // initialize array
   {
     comb_sum[i] = 0;
   }
+  
+  for (int i = lines; i > 0; i--) // input c values of each line
+  {
+    std::cin >> c_values[i-1];
+  }
+  
+
 
   /* percorrer c_values para ver a maior dimensão possivel
 
@@ -211,31 +214,29 @@ int main()
 
   for (int i = 0; i < lines; i++) // fill colored squares
   {
-    std::cout << c_values[i] << std::endl;
     for (int j = 0; j < c_values[i]; j++)
     {
-      
       m.at(i).at(j) = 1;
     }
   }
-
-  for (int i = lines; i > 0; i--) // print matrix
+/*
+  for (int i = lines -1; i >= 0; i--) // print matrix
   {
-    for (int j = 0; j < columns; j++)
+    for (int j = 0; j < c_values[i]; j++)
     {
-      //std::cout << "aaaaa" << std::endl;
-      if(m.at(i-1).at(j) == 1){
-        std::cout << m.at(i-1).at(j) << "|";
-      }
+      std::cout << m.at(i).at(j) << "|";
     }
     std::cout << "\n";
   }
-
+*/
 
   
   for(int i = 0; i < lines; i++) {
-    if(i == 0 && c_values[i] != 0) { comb_sum[0] = 1;}
-    //else if(c_values[0] == 0) {break;}
+    if(i == 0 && c_values[i] != 0) { 
+      comb_sum[0] = 1;
+      total_combinations = 1;
+    }
+    else if(c_values[i] == 0) {break;}
     else {
       int d = std::min(c_values[i], i+1);
       total_combinations = recursive_comb(lines, columns, d, c_values, comb_sum, i);
