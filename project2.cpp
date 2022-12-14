@@ -1,12 +1,12 @@
 #include <iostream>
+#include <unordered_map>
 #include <vector>
 #include <string> 
-#include <map>
 
 
 using namespace std;
 
-map<string, int> map_values;
+unordered_map<string, int> map_values;
 typedef std::vector<std::vector<int>> matrix;
 
 
@@ -23,10 +23,6 @@ string convert(int arr[], int lines) {
     for (int i = 0; i < lines; i++) {
         number*=10;
         number+=arr[i];
-        if(arr[i]>0) {
-            number++;
-        }
-        number+=i;
     }
     return to_string(number);
 }
@@ -88,43 +84,44 @@ int combinations(matrix m, int i_max, int col_max, int max_dim, int lines, int c
             }
         }
     }
-
     
     for(int i = max_dim; i>0;i--) {
-      //cout<<i<<endl;
-      matrix new_m = zero_matrix(m, i, i_max, col_max);
-      //////////corrigir c_values///////
-      int new_c_values[lines] = {};
-      for (int i = 0; i < lines; i++) 
-      {
-          for (int j = 1; j < columns+1; j++)
-          {
-              if(new_m.at(i).at(j) > 0) {
-                  new_c_values[i]++;
-              }
-              else {
-                  break;
-              }
-          }
-      }
+        //cout<<i<<endl;
+        matrix new_m = zero_matrix(m, i, i_max, col_max);
+        //////////corrigir c_values///////
+        int new_c_values[lines] = {};
+        for (int i = 0; i < lines; i++) 
+        {
+            for (int j = 1; j < columns+1; j++)
+            {
+                if(new_m.at(i).at(j) > 0) {
+                    new_c_values[i]++;
+                }
+                else {
+                    break;
+                }
+            }
+        }
 
-    /////////////////////
-      string key = convert(c_values, lines);
-      if(map_values.find(key)!=map_values.end()) {
-          return map_values[key];
-      }
-      else {
-          int new_i_max = find_i_max(new_c_values, lines, columns, new_m);
-          int new_col_max = find_col_max(new_c_values, lines, columns, new_i_max, new_m);
-          int new_max_dim = find_max_dim(new_m, new_c_values, lines, col_max, new_i_max, new_col_max);
-          key = convert(new_c_values, lines);
-          count+= combinations(new_m, new_i_max, new_col_max, new_max_dim, lines, columns, 0);
+        /////////////////////
+        string key = convert(c_values, lines);
+        if(map_values.find(key)==map_values.end()) {
+            int new_i_max = find_i_max(new_c_values, lines, columns, new_m);
+            int new_col_max = find_col_max(new_c_values, lines, columns, new_i_max, new_m);
+            int new_max_dim = find_max_dim(new_m, new_c_values, lines, col_max, new_i_max, new_col_max);
+            key = convert(new_c_values, lines);
+            count+= combinations(new_m, new_i_max, new_col_max, new_max_dim, lines, columns, 0);
+            map_values.insert(pair<string, int>(key, count));
 
-          //map_values.insert(pair<string, int>(key, count));
-      }
+
+        }
+        else {
+            return map_values[key];
+
+        }
     }
-    
     return count;
+
 
 }
 
