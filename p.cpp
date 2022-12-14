@@ -1,12 +1,12 @@
 #include <iostream>
 #include <vector>
-#include <string>
 #include <unordered_map>
 
 using namespace std;
 
 unordered_map<long int, long int> map_values;
 typedef std::vector<std::vector<int>> matrix;
+
 
 matrix zero_matrix(matrix m, int d, int i_max, int col_max)
 {
@@ -19,9 +19,10 @@ matrix zero_matrix(matrix m, int d, int i_max, int col_max)
     }
     return m;
 }
+
 long int convert(int arr[], int lines)
 {
-    int number = 0;
+    long int number = 0;
     for (int i = 0; i < lines; i++)
     {
         number *= 10;
@@ -30,7 +31,7 @@ long int convert(int arr[], int lines)
         {
             number++;
         }
-        number += i;
+        number += i; //trata colisoes
     }
     return number;
 }
@@ -103,17 +104,15 @@ long int combinations(matrix m, int i_max, int col_max, int max_dim, int lines, 
         }
     }
 
-    long int key = convert(c_values, lines);
-    if (map_values.count(key) == 1)
+    long int key1 = convert(c_values, lines);
+    if (map_values.count(key1) == 1)
     {
-        return map_values[key];
+        return map_values[key1];
     }
 
     for (int i = max_dim; i > 0; i--)
     {
-        // cout<<i<<endl;
         matrix new_m = zero_matrix(m, i, i_max, col_max);
-        //////////corrigir c_values///////
         int new_c_values[lines] = {};
         for (int i = 0; i < lines; i++)
         {
@@ -130,17 +129,13 @@ long int combinations(matrix m, int i_max, int col_max, int max_dim, int lines, 
             }
         }
 
-        /////////////////////
         int new_i_max = find_i_max(new_c_values, lines, columns, new_m);
         int new_col_max = find_col_max(new_c_values, lines, columns, new_i_max, new_m);
         int new_max_dim = find_max_dim(new_m, new_c_values, lines, col_max, new_i_max, new_col_max);
 
-        key = convert(new_c_values, lines);
-
         count += combinations(new_m, new_i_max, new_col_max, new_max_dim, lines, columns, 0);
     }
-    key = convert(c_values, lines);
-    map_values.insert(pair<long int, int>(key, count));
+    map_values.insert(pair<long int, int>(key1, count));
 
     return count;
 }
@@ -151,20 +146,20 @@ int main()
     int lines = 0, columns = 0;
     long int total_combinations = 0;
 
-    std::cin >> lines;
-    std::cin >> columns;
+    cin >> lines;
+    cin >> columns;
 
     int c_values[lines];
     for (int i = 0; i < lines; i++) // input c values of each line
     {
-        std::cin >> c_values[i];
+        cin >> c_values[i];
     }
 
     matrix m = {};
 
     for (int i = 0; i <= lines; i++) // initialize matrix
     {
-        std::vector<int> vector = {};
+        vector<int> vector = {};
         for (int j = 0; j <= columns + 1; j++)
         {
             vector.push_back(0);
@@ -193,19 +188,8 @@ int main()
         total_combinations = combinations(m, i_max, col_max, max_dim, lines, columns, 0);
     }
 
-    /* matrix m2 = zero_matrix(m, 2,i_max,col_max);
-     for (int i = 0; i <= lines; i++) // print matrix
-     {
-         for (int j = 0; j <= columns+1; j++)
-         {
 
-             std::cout << m2.at(i).at(j) << "|";
-         }
-
-         std::cout << "\n";
-     } */
-
-    cout << total_combinations << std::endl;
+    cout << total_combinations << endl;
 
     return 0;
 }
