@@ -1,46 +1,49 @@
 #include <iostream>
 #include <vector>
-#include <string> 
-#include <map>
-
+#include <string>
+#include <unordered_map>
 
 using namespace std;
 
-map<string, int> map_values;
-typedef std::vector<std::vector<int>> matrix;
+unordered_map<string, ushort> map_values;
+typedef std::vector<std::vector<ushort>> matrix;
 
-
-matrix zero_matrix(matrix m, int d, int i_max, int col_max) {
-    for(int i = i_max; i < i_max+d; i++) {
-        for(int j = col_max; j>col_max-d;j--) {
+matrix zero_matrix(matrix m, ushort d, ushort i_max, ushort col_max)
+{
+    for (ushort i = i_max; i < i_max + d; i++)
+    {
+        for (ushort j = col_max; j > col_max - d; j--)
+        {
             m.at(i).at(j) = 0;
         }
     }
     return m;
 }
-string convert(int arr[], int lines) {
-    int number = 0;
-    for (int i = 0; i < lines; i++) {
-        number*=10;
-        number+=arr[i];
-        if(arr[i]>0) {
-            number++;
-        }
-        number+=i;
+string convert(ushort arr[], ushort lines)
+{
+    ushort number = 0;
+    for (ushort i = 0; i < lines; i++)
+    {
+        number *= 10;
+        number += arr[i];
+        
     }
     return to_string(number);
 }
 
-int find_max_dim(matrix m,int c_values[], int lines, int columns,int  i_max, int col_max) {
-//n vale a pena ver à direita , ve à esq e em baixo 
-    if(i_max ==0 && col_max == 0) {
+ushort find_max_dim(matrix m, ushort c_values[], ushort lines, ushort columns, ushort i_max, ushort col_max)
+{
+    // n vale a pena ver à direita , ve à esq e em baixo
+    if (i_max == 0 && col_max == 0)
+    {
         return 0;
     }
-    int max_dim = 0;
-    int minimum = min(lines-i_max, col_max);
-    //cout<<"minimuuuuuuuuu"<<minimum<<"i_max"<<i_max<<"col"<<col_max<<endl;
-    for(int i = 1; i<=minimum;i++) {
-        if(m.at(i_max+i).at(col_max) == 0 || m.at(i_max).at(col_max-i) == 0) {
+    ushort max_dim = 0;
+    ushort minimum = min(lines - i_max, col_max);
+    for (ushort i = 1; i <= minimum; i++)
+    {
+        if (m.at(i_max + i).at(col_max) == 0 || m.at(i_max).at(col_max - i) == 0)
+        {
             max_dim = i;
             break;
         }
@@ -48,161 +51,149 @@ int find_max_dim(matrix m,int c_values[], int lines, int columns,int  i_max, int
     return max_dim;
 }
 
-int find_col_max(int c_values[], int lines, int columns, int i_max, matrix m) {
-    int col_max = 0;
-    for(int j= columns+1; j >=0 ;j--) {
-        if(m.at(i_max).at(j) == 1) {
+ushort find_col_max(ushort c_values[], ushort lines, ushort columns, ushort i_max, matrix m)
+{
+    ushort col_max = 0;
+    for (ushort j = columns + 1; j >= 0; j--)
+    {
+        if (m.at(i_max).at(j) == 1)
+        {
             col_max = j;
             break;
         }
-
     }
     return col_max;
 }
-int find_i_max(int c_values[], int lines, int columns, matrix m) {
-    int i_max = 0;
-    for (int i = 0; i < lines; i++) // input c values of each line
-    {   
-        if(c_values[i]>c_values[i_max]) {
+ushort find_i_max(ushort c_values[], ushort lines, ushort columns, matrix m)
+{
+    ushort i_max = 0;
+    for (ushort i = 0; i < lines; i++) // input c values of each line
+    {
+        if (c_values[i] > c_values[i_max])
+        {
             i_max = i;
         }
     }
     return i_max;
 }
 
-int combinations(matrix m, int i_max, int col_max, int max_dim, int lines, int columns, int count) {
-    if(max_dim == 0) {
+ushort combinations(matrix m, ushort i_max, ushort col_max, ushort max_dim, ushort lines, ushort columns, ushort count)
+{
+    if (max_dim == 0)
+    {
         return 1;
     }
 
-    int c_values[lines] = {};
-    for (int i = 0; i < lines; i++) 
+    ushort c_values[lines] = {};
+    for (ushort i = 0; i < lines; i++)
     {
-        for (int j = 1; j < columns+1; j++)
+        for (ushort j = 1; j < columns + 1; j++)
         {
-            if(m.at(i).at(j) > 0) {
+            if (m.at(i).at(j) > 0)
+            {
                 c_values[i]++;
             }
-            else {
+            else
+            {
                 break;
             }
         }
     }
 
-    
-    for(int i = max_dim; i>0;i--) {
-        //cout<<i<<endl;
+    for (ushort i = max_dim; i > 0; i--)
+    {
         matrix new_m = zero_matrix(m, i, i_max, col_max);
-        //////////corrigir c_values///////
-        int new_c_values[lines] = {};
-        for (int i = 0; i < lines; i++) 
+        ushort new_c_values[lines] = {};
+        for (ushort i = 0; i < lines; i++)
         {
-            for (int j = 1; j < columns+1; j++)
+            for (ushort j = 1; j < columns + 1; j++)
             {
-                if(new_m.at(i).at(j) > 0) {
+                if (new_m.at(i).at(j) > 0)
+                {
                     new_c_values[i]++;
                 }
-                else {
+                else
+                {
                     break;
                 }
             }
         }
 
-    /////////////////////
+        /////////////////////
         string key = convert(c_values, lines);
-        if(map_values.find(key)!=map_values.end()) {
+        if (map_values[key] != 0)
+        {
             return map_values[key];
         }
-        else {
-            int new_i_max = find_i_max(new_c_values, lines, columns, new_m);
-            int new_col_max = find_col_max(new_c_values, lines, columns, new_i_max, new_m);
-            int new_max_dim = find_max_dim(new_m, new_c_values, lines, col_max, new_i_max, new_col_max);
+        else
+        {
+            ushort new_i_max = find_i_max(new_c_values, lines, columns, new_m);
+            ushort new_col_max = find_col_max(new_c_values, lines, columns, new_i_max, new_m);
+            ushort new_max_dim = find_max_dim(new_m, new_c_values, lines, col_max, new_i_max, new_col_max);
             key = convert(new_c_values, lines);
-            count+= combinations(new_m, new_i_max, new_col_max, new_max_dim, lines, columns, 0);
+            count += combinations(new_m, new_i_max, new_col_max, new_max_dim, lines, columns, 0);
 
-            map_values.insert(pair<string, int>(key, count));
+            map_values.insert(pair<string, ushort>(key, count));
         }
-
     }
-    return count;
 
+    return count;
 }
 
 int main()
 {
 
-    int lines = 0, columns = 0;
-    int total_combinations = 0;
+    ushort lines = 0, columns = 0;
+    long int total_combinations = 0;
 
     std::cin >> lines;
     std::cin >> columns;
 
-
-    int c_values[lines];
-    for (int i = 0; i < lines; i++) // input c values of each line
-    {   
+    ushort c_values[lines];
+    for (ushort i = 0; i < lines; i++) // input c values of each line
+    {
         std::cin >> c_values[i];
-
     }
 
     matrix m = {};
 
-    for (int i = 0; i <= lines; i++) // initialize matrix
+    for (ushort i = 0; i <= lines; i++) // initialize matrix
     {
-        std::vector<int> vector = {};
-        for (int j = 0; j <= columns+1; j++)
-        {
-        vector.push_back(0);
+        std::vector<ushort> vector = {};
+        for (ushort j = 0; j <= columns + 1; j++)
+        {   
+            vector.push_back(0);
         }
         m.push_back(vector);
     }
 
-    for (int i = 0; i < lines; i++) // fill colored squares
+    for (ushort i = 0; i < lines; i++) // fill colored squares
     {
-        for (int j = 1; j <= c_values[i]; j++)
+        for (ushort j = 1; j <= c_values[i]; j++)
         {
-        
-        m.at(i).at(j) = 1;
+
+            m.at(i).at(j) = 1;
         }
     }
 
 
 
-    /*for (int i = 0; i <= lines; i++) // print matrix
+    ushort i_max = find_i_max(c_values, lines, columns, m);
+    ushort col_max = find_col_max(c_values, lines, columns, i_max, m);
+    ushort max_dim = find_max_dim(m, c_values, lines, columns, i_max, col_max);
+    if (max_dim == 0)
     {
-        for (int j = 0; j <= columns+1; j++)
-        {
-
-            std::cout << m.at(i).at(j) << "|";
-        }
-        
-        std::cout << "\n";
-    } */
-    
-    int i_max = find_i_max(c_values, lines, columns, m);
-    int col_max = find_col_max(c_values, lines, columns, i_max, m);
-    int max_dim = find_max_dim(m, c_values, lines, columns, i_max, col_max);
-    if(max_dim == 0) {
         total_combinations = 0;
     }
-    else {
-        total_combinations= combinations(m, i_max, col_max, max_dim, lines, columns, 0);
-    }
-    
-   /* matrix m2 = zero_matrix(m, 2,i_max,col_max);
-    for (int i = 0; i <= lines; i++) // print matrix
+    else
     {
-        for (int j = 0; j <= columns+1; j++)
-        {
-
-            std::cout << m2.at(i).at(j) << "|";
-        }
-        
-        std::cout << "\n";
-    } */
+        total_combinations = combinations(m, i_max, col_max, max_dim, lines, columns, 0);
+    }
 
 
-    cout <<total_combinations << std::endl;
 
-  return 0;
+
+    cout << total_combinations << std::endl;
+
+    return 0;
 }
