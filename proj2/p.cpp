@@ -1,5 +1,6 @@
 #include <iostream>
 #include <algorithm>  
+#include <vector>
 
 using namespace std;
 
@@ -16,11 +17,12 @@ bool comp(edge edge_1, edge edge_2) {
     return false;
 }
 
-int search_free(int vertice, int parent[]) {
+int search_free(int vertice, vector<int> &parent) {
     if(parent[vertice] == -1) {
         return vertice;
     }
     return parent[vertice] = search_free(parent[vertice], parent);
+
 }
 
 int main() {
@@ -32,20 +34,21 @@ int main() {
     cin >> vertices;
     cin >> edges;
 
-    edge edges_array[edges];
-    int parent[vertices + 1];
-
-    for(int i = 1; i <= vertices; i++) {
-        parent[i] = -1;
+    vector<edge> edges_array;
+    vector<int> parent;
+    
+    for(int i = 1; i <= vertices+1; i++) {
+        parent.push_back(-1);
     }
-
     for (int i = 0; i < edges; i++) { 
+        edges_array.push_back(edge());
         cin >> edges_array[i].vertice_1 >> edges_array[i].vertice_2 >> edges_array[i].weight;
-    }
 
-    sort(edges_array, edges_array + edges, comp);
+    }   
 
-    for (int i = 0; i < edges; i++) { 
+    sort(edges_array.begin(), edges_array.end(), comp);
+
+    for (int i = 0; i < edges; i++) {
 
         vertice_1 = search_free(edges_array[i].vertice_1, parent);
         vertice_2 = search_free(edges_array[i].vertice_2, parent);
@@ -54,6 +57,7 @@ int main() {
             max_trade += edges_array[i].weight;
             parent[vertice_1] = vertice_2;
         }
+
     }
 
     cout << max_trade << endl;
